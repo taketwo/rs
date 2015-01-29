@@ -204,8 +204,8 @@ void
 pcl::RealSenseGrabber::run ()
 {
   PXCProjection* projection = device_->getPXCDevice ().CreateProjection ();
-  PXCCapture::Sample sample;  
-  PXCPoint3DF32* vertices = new PXCPoint3DF32[SIZE];
+  PXCCapture::Sample sample;
+  std::vector<PXCPoint3DF32> vertices (SIZE);
 
   while (is_running_)
   {
@@ -261,7 +261,7 @@ pcl::RealSenseGrabber::run ()
         sample.depth->ReleaseAccess (&data);
       }
 
-      projection->QueryVertices (sample.depth, vertices);
+      projection->QueryVertices (sample.depth, vertices.data ());
 
       if (need_xyz_)
       {
@@ -333,7 +333,6 @@ pcl::RealSenseGrabber::run ()
     }
     sample.ReleaseImages ();
   }
-  delete[] vertices;
   projection->Release ();
   // TODO: replace with a custom "restart" function?
   std::string id = device_->getSerialNumber ();
