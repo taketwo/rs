@@ -46,8 +46,6 @@
 #include <pcl/io/grabber.h>
 #include <pcl/common/time.h>
 
-#include <queue>
-
 namespace pcl
 {
 
@@ -60,6 +58,7 @@ namespace pcl
     {
       class RealSenseDevice;
     }
+
   }
 
   class PCL_EXPORTS RealSenseGrabber : public Grabber
@@ -93,13 +92,12 @@ namespace pcl
         * grabbers to interact with it. The device is "released" when the
         * grabber is destructed.
         *
-        * This will throw pcl::IOException if there are no free devices that
-        * match the supplied \a device_id.
+        * This will throw pcl::io::IOException if there are no free devices
+        * that match the supplied \a device_id.
         *
-        * \param[in] device_id device identifier, which might be a serial
-        * number, an index (with '#' prefix), or an empty string (to select the
-        * first available device)
-        */
+        * \param[in] device_id device identifier, which can be a serial number,
+        * an index (with '#' prefix), or an empty string (to select the first
+        * available device) */
       RealSenseGrabber (const std::string& device_id = "");
 
       virtual
@@ -145,19 +143,16 @@ namespace pcl
 
       boost::shared_ptr<pcl::io::real_sense::RealSenseDevice> device_;
 
-      /// Serial number of the device captured by this grabber
-      std::string device_id_;
-
       bool is_running_;
       unsigned int confidence_threshold_;
       TemporalFilteringType temporal_filtering_type_;
 
-      /// Indicates whether there are subscribers for PointXYZ signal. This is
-      /// computed and stored on start()
+      /// Indicates whether there are subscribers for PointXYZ signal, computed
+      /// and stored on start()
       bool need_xyz_;
 
-      /// Indicates whether there are subscribers for PointXYZRGBA signal. This
-      /// is computed and stored on start()
+      /// Indicates whether there are subscribers for PointXYZRGBA signal,
+      /// computed and stored on start()
       bool need_xyzrgba_;
 
       EventFrequency frequency_;
@@ -173,6 +168,7 @@ namespace pcl
       static const int COLOR_HEIGHT = 480;
       static const int COLOR_SIZE = COLOR_WIDTH * COLOR_HEIGHT;
 
+      /// Depth buffer to perform temporal filtering of the depth images
       boost::shared_ptr<pcl::io::Buffer<unsigned short> > depth_buffer_;
 
   };

@@ -164,8 +164,6 @@ namespace pcl
 
       };
 
-
-
     } // namespace real_sense
 
   } // namespace io

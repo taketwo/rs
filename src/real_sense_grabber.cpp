@@ -144,7 +144,7 @@ pcl::RealSenseGrabber::setConfidenceThreshold (unsigned int threshold)
 {
   if (threshold > 15)
   {
-    PCL_WARN ("[pcl::RealSenseGrabber::setConfidenceThreshold] Attempted to set threshold outsize valid range (0-15)");
+    PCL_WARN ("[pcl::RealSenseGrabber::setConfidenceThreshold] Attempted to set threshold outside valid range (0-15)");
   }
   else
   {
@@ -229,6 +229,20 @@ pcl::RealSenseGrabber::run ()
       frequency_.event ();
       fps_mutex_.unlock ();
 
+      /* We preform the following steps to convert received data into point clouds:
+       * 
+       *   1. Push depth image to the depth buffer
+       *   2. Pull filtered depth image from the depth buffer
+       *   3. Project (filtered) depth image into 3D
+       *   4. Fill XYZ point cloud with computed points
+       *   5. Fill XYZRGBA point cloud with computed points
+       *   7. Project color image into 3D
+       *   6. Assign colors to points in XYZRGBA point cloud
+       *
+       * Steps 1-2 are skipped if temporal filtering is disabled.
+       * Step 4 is skipped if there are no subscribers for XYZ clouds.
+       * Steps 5-7 are skipped if there are no subscribers for XYZRGBA clouds. */
+
       if (temporal_filtering_type_ != RealSense_None)
       {
         PXCImage::ImageData data;
@@ -274,6 +288,8 @@ pcl::RealSenseGrabber::run ()
         uint32_t* d = reinterpret_cast<uint32_t*> (data.planes[0]);
         if (need_xyz_)
         {
+          // We can fill XYZ coordinates more efficiently using pcl::copyPointCloud,
+          // given that they were already computed for XYZ point cloud.
           xyzrgba_cloud.reset (new pcl::PointCloud<pcl::PointXYZRGBA>);
           pcl::copyPointCloud (*xyz_cloud, *xyzrgba_cloud);
           for (int i = 0; i < SIZE; i++)
