@@ -52,6 +52,26 @@
 
 using namespace pcl::io::real_sense;
 
+/* Helper function to convert a PXCPoint3DF32 point into a PCL point.
+ * Takes care of unit conversion (PXC point coordinates are in millimeters)
+ * and invalid points. */
+template <typename T> inline void
+convertPoint (const PXCPoint3DF32& src, T& tgt)
+{
+  static const float nan = std::numeric_limits<float>::quiet_NaN ();
+  if (src.z == 0)
+  {
+    tgt.x = tgt.y = tgt.z = nan;
+  }
+  else
+  {
+    tgt.x = src.x / 1000.0;
+    tgt.y = src.y / 1000.0;
+    tgt.z = src.z / 1000.0;
+  }
+}
+
+
 pcl::RealSenseGrabber::RealSenseGrabber (const std::string& device_id)
 : Grabber ()
 , is_running_ (false)
@@ -212,8 +232,6 @@ pcl::RealSenseGrabber::run ()
     pcl::PointCloud<pcl::PointXYZ>::Ptr xyz_cloud;
     pcl::PointCloud<pcl::PointXYZRGBA>::Ptr xyzrgba_cloud;
 
-    static const float nan = std::numeric_limits<float>::quiet_NaN ();
-
     pxcStatus status;
     if (need_xyzrgba_)
       status = device_->getPXCDevice ().ReadStreams (PXCCapture::STREAM_TYPE_DEPTH | PXCCapture::STREAM_TYPE_COLOR, &sample);
@@ -269,16 +287,7 @@ pcl::RealSenseGrabber::run ()
         xyz_cloud->header.stamp = timestamp;
         xyz_cloud->is_dense = false;
         for (int i = 0; i < SIZE; i++)
-        {
-          if (vertices[i].z == 0)
-            xyz_cloud->points[i].x = xyz_cloud->points[i].y = xyz_cloud->points[i].z = nan;
-          else
-          {
-            xyz_cloud->points[i].x = vertices[i].x / 1000.0;
-            xyz_cloud->points[i].y = vertices[i].y / 1000.0;
-            xyz_cloud->points[i].z = vertices[i].z / 1000.0;
-          }
-        }
+          convertPoint (vertices[i], xyz_cloud->points[i]);
       }
 
       if (need_xyzrgba_)
@@ -305,14 +314,7 @@ pcl::RealSenseGrabber::run ()
           xyzrgba_cloud->is_dense = false;
           for (int i = 0; i < SIZE; i++)
           {
-            if (vertices[i].z == 0)
-              xyzrgba_cloud->points[i].x = xyzrgba_cloud->points[i].y = xyzrgba_cloud->points[i].z = nan;
-            else
-            {
-              xyzrgba_cloud->points[i].x = vertices[i].x / 1000.0;
-              xyzrgba_cloud->points[i].y = vertices[i].y / 1000.0;
-              xyzrgba_cloud->points[i].z = vertices[i].z / 1000.0;
-            }
+            convertPoint (vertices[i], xyzrgba_cloud->points[i]);
             memcpy (&xyzrgba_cloud->points[i].rgba, &d[i], sizeof (uint32_t));
           }
         }
