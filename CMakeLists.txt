@@ -7,7 +7,7 @@ option(BUILD_TESTS "Build tests." OFF)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
 
 find_package(PCL 1.7.2 REQUIRED)
-find_package(RealSenseSDK REQUIRED)
+find_package(RSSDK REQUIRED)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
