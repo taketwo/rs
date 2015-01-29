@@ -48,6 +48,7 @@
 #include "real_sense_grabber.h"
 #include "real_sense/real_sense_device_manager.h"
 #include "buffers.h"
+#include "io_exception.h"
 
 using namespace pcl::io::real_sense;
 
@@ -109,7 +110,7 @@ pcl::RealSenseGrabber::start ()
       device_->getPXCDevice ().SetStreamProfileSet (&profile);
       bool valid = device_->getPXCDevice ().IsStreamProfileSetValid (&profile);
       if (!valid)
-        throw std::runtime_error ("invalid profile");
+        THROW_IO_EXCEPTION ("invalid stream profile for PXC device");
 
       thread_ = boost::thread (&RealSenseGrabber::run, this);
     }
@@ -326,14 +327,10 @@ pcl::RealSenseGrabber::run ()
       break;
     }
     case PXC_STATUS_DEVICE_LOST:
-      std::cout << "Device lost..." << std::endl;
-      break;
+      THROW_IO_EXCEPTION ("failed to read data stream from PXC device: device lost");
     case PXC_STATUS_ALLOC_FAILED:
-      // TODO: this actually happens in reality. Throw an exception!
-      std::cout << "Alloc failed..." << std::endl;
-      break;
+      THROW_IO_EXCEPTION ("failed to read data stream from PXC device: alloc failed");
     }
-    
     sample.ReleaseImages ();
   }
   delete[] vertices;
