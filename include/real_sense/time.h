@@ -38,6 +38,8 @@
 #ifndef PCL_IO_DEPTH_SENSE_TIME_H
 #define PCL_IO_DEPTH_SENSE_TIME_H
 
+#include <queue>
+
 #include <pcl/pcl_config.h>
 #include <pcl/common/time.h>
 
