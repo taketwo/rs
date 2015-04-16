@@ -97,15 +97,6 @@ namespace pcl
           boost::shared_ptr<RealSenseDevice>
           captureDevice (const std::string& sn);
 
-          // TODO: to release device simply let the ptr out of scope
-          //void
-          //releaseDevice (const std::string& sn);
-
-          //void
-          //reconfigureDevice (const std::string& sn);
-
-          PXCImage* createImage (PXCImage::ImageInfo& info);
-
           ~RealSenseDeviceManager ();
 
         private:

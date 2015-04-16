@@ -38,7 +38,6 @@
 #include "io_exception.h"
 
 #include "real_sense/real_sense_device_manager.h"
-#include "real_sense_grabber.h"
 
 boost::mutex pcl::io::real_sense::RealSenseDeviceManager::mutex_;
 
@@ -162,12 +161,6 @@ pcl::io::real_sense::RealSenseDeviceManager::captureDevice (const std::string& s
   }
   THROW_IO_EXCEPTION ("device with serial number %s is not connected", sn.c_str ());
   return (RealSenseDevice::Ptr ());  // never reached, needed just to silence -Wreturn-type warning
-}
-
-PXCImage*
-pcl::io::real_sense::RealSenseDeviceManager::createImage (PXCImage::ImageInfo& info)
-{
-  return (session_->CreateImage (&info));
 }
 
 void

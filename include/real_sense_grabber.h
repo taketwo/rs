@@ -35,8 +35,8 @@
  *
  */
 
-#ifndef PCL_IO_DEPTH_SENSE_GRABBER_H
-#define PCL_IO_DEPTH_SENSE_GRABBER_H
+#ifndef PCL_IO_REAL_SENSE_GRABBER_H
+#define PCL_IO_REAL_SENSE_GRABBER_H
 
 #include <boost/thread/thread.hpp>
 #include <boost/thread/mutex.hpp>
@@ -176,5 +176,5 @@ namespace pcl
 
 }
 
-#endif /* PCL_IO_DEPTH_SENSE_GRABBER_H */
+#endif /* PCL_IO_REAL_SENSE_GRABBER_H */
 
