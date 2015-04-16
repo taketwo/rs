@@ -24,7 +24,6 @@ if(RSSDK_DIR)
   set(RSSDK_INCLUDE_DIRS ${RSSDK_DIR}/include)
 
   # Libraries
-  set(RSSDK_LIBRARIES optimized ${RSSDK_LIBRARY} debug ${RSSDK_LIBRARY_DEBUG})
   set(RSSDK_RELEASE_NAME libpxc.lib)
   set(RSSDK_DEBUG_NAME libpxc_d.lib)
   find_library(RSSDK_LIBRARY
@@ -38,6 +37,7 @@ if(RSSDK_DIR)
   if(NOT RSSDK_LIBRARY_DEBUG)
     set(RSSDK_LIBRARY_DEBUG ${RSSDK_LIBRARY})
   endif()
+  set(RSSDK_LIBRARIES optimized ${RSSDK_LIBRARY} debug ${RSSDK_LIBRARY_DEBUG})
 
   # Version
   set(RSSDK_VERSION 0)
