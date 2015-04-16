@@ -22,7 +22,8 @@ if(RSSDK_DIR)
 
   # Include directories
   set(RSSDK_INCLUDE_DIRS ${RSSDK_DIR}/include)
-
+  mark_as_advanced(RSSDK_INCLUDE_DIRS)
+  
   # Libraries
   set(RSSDK_RELEASE_NAME libpxc.lib)
   set(RSSDK_DEBUG_NAME libpxc_d.lib)
@@ -38,6 +39,7 @@ if(RSSDK_DIR)
     set(RSSDK_LIBRARY_DEBUG ${RSSDK_LIBRARY})
   endif()
   set(RSSDK_LIBRARIES optimized ${RSSDK_LIBRARY} debug ${RSSDK_LIBRARY_DEBUG})
+  mark_as_advanced(RSSDK_LIBRARY RSSDK_LIBRARY_DEBUG)
 
   # Version
   set(RSSDK_VERSION 0)
@@ -50,31 +52,16 @@ if(RSSDK_DIR)
   endforeach()
   unset(_pxcversion_H_CONTENTS)
   set(RSSDK_VERSION "${RSSDK_VERSION_MAJOR}.${RSSDK_VERSION_MINOR}.${RSSDK_VERSION_BUILD}.${RSSDK_VERSION_REVISION}")
-
-  set(RSSDK_FOUND TRUE)
 	
 endif()
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(RSSDK DEFAULT_MSG
-                                  RSSDK_LIBRARY RSSDK_INCLUDE_DIRS)
-
-mark_as_advanced(RSSDK_LIBRARY RSSDK_LIBRARY_DEBUG RSSDK_INCLUDE_DIRS)
-
-if(RSSDK_FOUND)
-  if(NOT RSSDK_FIND_QUIETLY)
-    message(STATUS "RealSense SDK found (include: ${RSSDK_INCLUDE_DIRS}, libs: ${RSSDK_LIBRARIES})")
-    message(STATUS "RealSense SDK version: ${RSSDK_VERSION}")	
-  endif()
-else()
-  if(RSSDK_FIND_REQUIRED)
-    message(FATAL_ERROR "Could not find RealSense SDK!")
-  elseif(NOT RSSDK_FIND_QUIETLY)
-    message(WARNING "Could not find RealSense SDK!")
-	return()
-  endif()
-endif()
+find_package_handle_standard_args(RSSDK
+  FOUND_VAR RSSDK_FOUND
+  REQUIRED_VARS RSSDK_LIBRARIES RSSDK_INCLUDE_DIRS
+  VERSION_VAR RSSDK_VERSION
+)
 
 if(MSVC)
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /NODEFAULTLIB:LIBCMTD")
 endif()
