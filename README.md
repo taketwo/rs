@@ -56,9 +56,9 @@ Usage: real_sense_viewer.exe [Options] device_id
 
 Options:
 
-     --help, -h : Show this help
-     --list, -l : List connected RealSense devices
-     --xyz      : View XYZ-only clouds
+     --help, -h  : Show this help
+     --list, -l  : List connected RealSense devices and supported modes
+     --mode <id> : Use capture mode <id> from the list of supported modes
 
 Keyboard commands:
 
@@ -80,4 +80,9 @@ Notes:
      * device index (e.g. #2 for the second connected device)
 
    If device_id is not given, then the first available device will be used.
+
+   If capture mode is not given, then the grabber will try to enable both
+   depth and color streams at VGA resolution and 30 Hz framerate. If this
+   particular mode is not available, the one that most closely matches this
+   specification will be chosen.
 ```
