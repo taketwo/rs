@@ -169,6 +169,7 @@ pcl::RealSenseGrabber::start ()
       device_->getPXCDevice ().SetStreamProfileSet (&profile);
       if (!device_->getPXCDevice ().IsStreamProfileSetValid (&profile))
         THROW_IO_EXCEPTION ("Invalid stream profile for PXC device");
+      device_->getPXCDevice ().SetMirrorMode (PXCCapture::Device::MirrorMode::MIRROR_MODE_HORIZONTAL);
       frequency_.reset ();
       is_running_ = true;
       thread_ = boost::thread (&RealSenseGrabber::run, this);
@@ -376,9 +377,12 @@ pcl::RealSenseGrabber::run ()
           // given that they were already computed for XYZ point cloud.
           xyzrgba_cloud.reset (new pcl::PointCloud<pcl::PointXYZRGBA>);
           pcl::copyPointCloud (*xyz_cloud, *xyzrgba_cloud);
-          for (int i = 0; i < SIZE; i++)
+          for (int i = 0; i < HEIGHT; i++)
           {
-            memcpy (&xyzrgba_cloud->points[i].rgba, &d[i], sizeof (uint32_t));
+            pcl::PointXYZRGBA* cloud_row = &xyzrgba_cloud->points[i * WIDTH];
+            uint32_t* color_row = &d[i * data.pitches[0] / sizeof (uint32_t)];
+            for (int j = 0; j < WIDTH; j++)
+              memcpy (&cloud_row[j].rgba, &color_row[j], sizeof (uint32_t));
           }
         }
         else
@@ -386,10 +390,16 @@ pcl::RealSenseGrabber::run ()
           xyzrgba_cloud.reset (new pcl::PointCloud<pcl::PointXYZRGBA> (WIDTH, HEIGHT));
           xyzrgba_cloud->header.stamp = timestamp;
           xyzrgba_cloud->is_dense = false;
-          for (int i = 0; i < SIZE; i++)
+          for (int i = 0; i < HEIGHT; i++)
           {
-            convertPoint (vertices[i], xyzrgba_cloud->points[i]);
-            memcpy (&xyzrgba_cloud->points[i].rgba, &d[i], sizeof (uint32_t));
+            PXCPoint3DF32* vertices_row = &vertices[i * WIDTH];
+            pcl::PointXYZRGBA* cloud_row = &xyzrgba_cloud->points[i * WIDTH];
+            uint32_t* color_row = &d[i * data.pitches[0] / sizeof (uint32_t)];
+            for (int j = 0; j < WIDTH; j++)
+            {
+              convertPoint (vertices_row[j], cloud_row[j]);
+              memcpy (&cloud_row[j].rgba, &color_row[j], sizeof (uint32_t));
+            }
           }
         }
         mapped->ReleaseAccess (&data);
