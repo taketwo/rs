@@ -160,15 +160,28 @@ namespace pcl
       virtual float
       getFramesPerSecond () const;
 
+      /** Set the confidence threshold for depth data.
+        *
+        * Valid range is [0..15]. Discarded points will have their coordinates
+        * set to NaNs). */
       void
       setConfidenceThreshold (unsigned int threshold);
 
+      /** Enable temporal filtering of the depth data received from the device.
+        *
+        * The window size parameter is not relevant for `RealSense_None`
+        * filtering type.
+        *
+        * \note if the grabber is running and the new parameters are different
+        * from the current parameters, grabber will be restarted. */
       void
       enableTemporalFiltering (TemporalFilteringType type, size_t window_size);
 
+      /** Disable temporal filtering. */
       void
       disableTemporalFiltering ();
 
+      /** Get the serial number of device captured by the grabber. */
       const std::string&
       getDeviceSerialNumber () const;
 
