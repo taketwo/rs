@@ -47,8 +47,3 @@ target_link_libraries(real_sense_viewer
   ${RSSDK_LIBRARIES}
 )
 
-if (BUILD_TESTS)
-  enable_testing()
-  add_subdirectory(test)
-endif()
-

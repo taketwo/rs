@@ -2,7 +2,7 @@
  * Software License Agreement (BSD License)
  *
  *  Point Cloud Library (PCL) - www.pointclouds.org
- *  Copyright (c) 2014-, Open Perception, Inc.
+ *  Copyright (c) 2015-, Open Perception, Inc.
  *
  *  All rights reserved.
  *
@@ -50,7 +50,6 @@
 #include <pcl/io/pcd_io.h>
 
 #include "real_sense_grabber.h"
-#include "real_sense/real_sense_device_manager.h" // TODO: remove afterwards
 
 using namespace pcl::console;
 
@@ -390,7 +389,6 @@ main (int argc, char** argv)
   unsigned int mode_id = 0;
   bool with_mode = find_argument(argc, argv, "--mode") != -1;
   parse_argument(argc, argv, "--mode", mode_id);
-  bool xyz_only = find_switch(argc, argv, "--xyz");
 
   std::string device_id;
 
