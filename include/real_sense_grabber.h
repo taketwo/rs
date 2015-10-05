@@ -186,6 +186,14 @@ namespace pcl
 
       void run ();
 
+      /** Compute a score which indicates how different is a given mode is from
+        * the mode requested by the user.
+        *
+        * Importance of factors: fps > depth resolution > color resolution. The
+        * lower the score the better. */
+      float
+      computeModeScore (const Mode& mode);
+
       // Signals to indicate whether new clouds are available
       boost::signals2::signal<sig_cb_real_sense_point_cloud>* point_cloud_signal_;
       boost::signals2::signal<sig_cb_real_sense_point_cloud_rgba>* point_cloud_rgba_signal_;

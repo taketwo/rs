@@ -418,3 +418,23 @@ pcl::RealSenseGrabber::run ()
   device_.reset ();
   device_ = RealSenseDeviceManager::getInstance ()->captureDevice (id);
 }
+
+float
+pcl::RealSenseGrabber::computeModeScore (const Mode& mode)
+{
+  const float FPS_WEIGHT = 100000;
+  const float DEPTH_WEIGHT = 1000;
+  const float COLOR_WEIGHT = 1;
+  int f = mode.fps - mode_requested_.fps;
+  int dw = mode.depth_width - mode_requested_.depth_width;
+  int dh = mode.depth_height - mode_requested_.depth_height;
+  int cw = mode.color_width - mode_requested_.color_width;
+  int ch = mode.color_height - mode_requested_.color_height;
+  float penalty;
+  penalty  = std::abs (FPS_WEIGHT * f * (mode_requested_.fps != 0));
+  penalty += std::abs (DEPTH_WEIGHT * dw * (mode_requested_.depth_width != 0));
+  penalty += std::abs (DEPTH_WEIGHT * dh * (mode_requested_.depth_height != 0));
+  penalty += std::abs (COLOR_WEIGHT * cw * (mode_requested_.color_width != 0 && need_xyzrgba_));
+  penalty += std::abs (COLOR_WEIGHT * ch * (mode_requested_.color_height != 0 && need_xyzrgba_));
+  return penalty;
+}
