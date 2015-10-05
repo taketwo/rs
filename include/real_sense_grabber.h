@@ -182,6 +182,23 @@ namespace pcl
       std::vector<Mode>
       getAvailableModes (bool only_depth = false) const;
 
+      /** Set desired capturing mode.
+        *
+        * \note if the grabber is running and the new mode is different the
+        * one requested previously, grabber will be restarted. */
+      void
+      setMode (const Mode& mode, bool strict = false);
+
+      /** Get currently active capturing mode.
+        * 
+        * \note: capturing mode is selected when start() is called; output of
+        * this function before grabber was started is undefined. */
+      const Mode&
+      getMode () const
+      {
+        return (mode_selected_);
+      }
+
     private:
 
       void

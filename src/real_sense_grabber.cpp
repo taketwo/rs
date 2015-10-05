@@ -276,6 +276,20 @@ pcl::RealSenseGrabber::getAvailableModes (bool only_depth) const
 }
 
 void
+pcl::RealSenseGrabber::setMode (const Mode& mode, bool strict)
+{
+  if (mode == mode_requested_ && strict == strict_)
+    return;
+  mode_requested_ = mode;
+  strict_ = strict;
+  if (is_running_)
+  {
+    stop ();
+    start ();
+  }
+}
+
+void
 pcl::RealSenseGrabber::run ()
 {
   const int WIDTH = mode_selected_.depth_width;
