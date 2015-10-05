@@ -75,9 +75,41 @@ namespace pcl
         void (sig_cb_real_sense_point_cloud_rgba)
           (const pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr&);
 
-      enum Mode
+      /** A descriptor for capturing mode.
+        *
+        * Consists of framerate and resolutions of depth and color streams.
+        * Serves two purposes: to describe the desired capturing mode when
+        * creating a grabber, and to list the available modes supported by the
+        * grabber (see getAvailableModes()). In the first case setting some
+        * fields to zero means "don't care", i.e. the grabber is allowed to
+        * decide itself which concrete values to use. */
+      struct Mode
       {
-        RealSense_VGA_30Hz = 0,
+        unsigned int fps;
+        unsigned int depth_width;
+        unsigned int depth_height;
+        unsigned int color_width;
+        unsigned int color_height;
+
+        /** Set all fields to zero (i.e. "don't care"). */
+        Mode ();
+
+        /** Set desired framerate, the rest is "don't care". */
+        Mode (unsigned int fps);
+
+        /** Set desired depth resolution, the rest is "don't care". */
+        Mode (unsigned int depth_width, unsigned int depth_height);
+
+        /** Set desired framerate and depth resolution, the rest is "don't
+          * care". */
+        Mode (unsigned int fps, unsigned int depth_width, unsigned int depth_height);
+
+        /** Set desired depth and color resolution, the rest is "don't
+          * care". */
+        Mode (unsigned int depth_width, unsigned int depth_height, unsigned int color_width, unsigned int color_height);
+
+        /** Set desired framerate, depth and color resolution. */
+        Mode (unsigned int fps, unsigned int depth_width, unsigned int depth_height, unsigned int color_width, unsigned int color_height);
       };
 
       enum TemporalFilteringType
@@ -134,6 +166,16 @@ namespace pcl
       const std::string&
       getDeviceSerialNumber () const;
 
+      /** Get a list of capturing modes supported by the PXC device
+        * controlled by this grabber.
+        *
+        * \param[in] only_depth list depth-only modes
+        * 
+        * \note: this list exclude modes where framerates of the depth and
+        * color streams do not match. */
+      std::vector<Mode>
+      getAvailableModes (bool only_depth = false) const;
+
     private:
 
       void run ();
@@ -175,6 +217,9 @@ namespace pcl
   };
 
 }
+
+bool
+operator== (const pcl::RealSenseGrabber::Mode& m1, const pcl::RealSenseGrabber::Mode& m2);
 
 #endif /* PCL_IO_REAL_SENSE_GRABBER_H */
 

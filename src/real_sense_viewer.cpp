@@ -69,7 +69,7 @@ printHelp (int, char **argv)
   std::cout << "Options:" << std::endl;
   std::cout << std::endl;
   std::cout << "     --help, -h : Show this help"                                             << std::endl;
-  std::cout << "     --list, -l : List connected RealSense devices"                           << std::endl;
+  std::cout << "     --list, -l : List connected RealSense devices and supported modes"       << std::endl;
   std::cout << "     --xyz      : View XYZ-only clouds"                                       << std::endl;
   std::cout << std::endl;
   std::cout << "Keyboard commands:"                                                           << std::endl;
@@ -102,12 +102,33 @@ printDeviceList ()
   std::vector<RealSenseGrabberPtr> grabbers;
   std::cout << "Connected devices: ";
   boost::format fmt ("\n  #%i  %s");
+  boost::format fmt_dm ("\n        %2i) %d Hz  %dx%d Depth");
+  boost::format fmt_dcm ("\n        %2i) %d Hz  %dx%d Depth  %dx%d Color");
   while (true)
   {
     try
     {
       grabbers.push_back (RealSenseGrabberPtr (new pcl::RealSenseGrabber));
       std::cout << boost::str (fmt % grabbers.size () % grabbers.back ()->getDeviceSerialNumber ());
+      std::vector<pcl::RealSenseGrabber::Mode> xyz_modes = grabbers.back ()->getAvailableModes (true);
+      std::cout << "\n      Depth modes:";
+      if (xyz_modes.size ())
+        for (size_t i = 0; i < xyz_modes.size (); ++i)
+          std::cout << boost::str (fmt_dm % (i + 1) % xyz_modes[i].fps % xyz_modes[i].depth_width % xyz_modes[i].depth_height);
+      else
+      {
+        std::cout << " none";
+      }
+      std::vector<pcl::RealSenseGrabber::Mode> xyzrgba_modes = grabbers.back ()->getAvailableModes (false);
+      std::cout << "\n      Depth + color modes:";
+      if (xyz_modes.size ())
+        for (size_t i = 0; i < xyzrgba_modes.size (); ++i)
+        {
+          const pcl::RealSenseGrabber::Mode& m = xyzrgba_modes[i];
+          std::cout << boost::str (fmt_dcm % (i + 1) % m.fps % m.depth_width % m.depth_height % m.color_width % m.color_height);
+        }
+      else
+        std::cout << " none";
     }
     catch (pcl::io::IOException& e)
     {

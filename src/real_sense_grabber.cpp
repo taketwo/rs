@@ -71,6 +71,45 @@ convertPoint (const PXCPoint3DF32& src, T& tgt)
   }
 }
 
+pcl::RealSenseGrabber::Mode::Mode ()
+: fps (0), depth_width (0), depth_height (0), color_width (0), color_height (0)
+{
+}
+
+pcl::RealSenseGrabber::Mode::Mode (unsigned int f)
+: fps (f), depth_width (0), depth_height (0), color_width (0), color_height (0)
+{
+}
+
+pcl::RealSenseGrabber::Mode::Mode (unsigned int dw, unsigned int dh)
+: fps (0), depth_width (dw), depth_height (dh), color_width (0), color_height (0)
+{
+}
+
+pcl::RealSenseGrabber::Mode::Mode (unsigned int f, unsigned int dw, unsigned int dh)
+: fps (f), depth_width (dw), depth_height (dh), color_width (0), color_height (0)
+{
+}
+
+pcl::RealSenseGrabber::Mode::Mode (unsigned int dw, unsigned int dh, unsigned int cw, unsigned int ch)
+: fps (0), depth_width (dw), depth_height (dh), color_width (cw), color_height (ch)
+{
+}
+
+pcl::RealSenseGrabber::Mode::Mode (unsigned int f, unsigned int dw, unsigned int dh, unsigned int cw, unsigned int ch)
+: fps (f), depth_width (dw), depth_height (dh), color_width (cw), color_height (ch)
+{
+}
+
+bool
+operator== (const pcl::RealSenseGrabber::Mode& m1, const pcl::RealSenseGrabber::Mode& m2)
+{
+  return (m1.fps == m2.fps &&
+          m1.depth_width == m2.depth_width &&
+          m1.depth_height == m2.depth_height &&
+          m1.color_width == m2.color_width &&
+          m1.color_height == m2.color_height);
+}
 
 pcl::RealSenseGrabber::RealSenseGrabber (const std::string& device_id)
 : Grabber ()
@@ -218,6 +257,40 @@ const std::string&
 pcl::RealSenseGrabber::getDeviceSerialNumber () const
 {
   return (device_->getSerialNumber ());
+}
+
+std::vector<pcl::RealSenseGrabber::Mode>
+pcl::RealSenseGrabber::getAvailableModes (bool only_depth) const
+{
+  std::vector<Mode> modes;
+  PXCCapture::StreamType streams = only_depth
+    ? PXCCapture::STREAM_TYPE_DEPTH
+    : PXCCapture::STREAM_TYPE_DEPTH | PXCCapture::STREAM_TYPE_COLOR;
+  for (int p = 0;; p++)
+  {
+    PXCCapture::Device::StreamProfileSet profiles = {};
+    if (device_->getPXCDevice ().QueryStreamProfileSet (streams, p, &profiles) == PXC_STATUS_NO_ERROR)
+    {
+      if (!only_depth && profiles.depth.frameRate.max != profiles.color.frameRate.max)
+        continue; // we need both streams to have the same framerate
+      Mode mode;
+      mode.fps = profiles.depth.frameRate.max;
+      mode.depth_width = profiles.depth.imageInfo.width;
+      mode.depth_height = profiles.depth.imageInfo.height;
+      mode.color_width = profiles.color.imageInfo.width;
+      mode.color_height = profiles.color.imageInfo.height;
+      bool duplicate = false;
+      for (size_t i = 0; i < modes.size (); ++i)
+        duplicate |= modes[i] == mode;
+      if (!duplicate)
+        modes.push_back (mode);
+    }
+    else
+    {
+      break;
+    }
+  }
+  return modes;
 }
 
 void
