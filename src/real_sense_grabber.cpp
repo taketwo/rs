@@ -111,13 +111,15 @@ operator== (const pcl::RealSenseGrabber::Mode& m1, const pcl::RealSenseGrabber::
           m1.color_height == m2.color_height);
 }
 
-pcl::RealSenseGrabber::RealSenseGrabber (const std::string& device_id)
+pcl::RealSenseGrabber::RealSenseGrabber (const std::string& device_id, const Mode& mode, bool strict)
 : Grabber ()
 , is_running_ (false)
 , confidence_threshold_ (6)
 , temporal_filtering_type_ (RealSense_None)
 , depth_buffer_ (new pcl::io::SingleBuffer<unsigned short> (SIZE))
 , temporal_filtering_window_size_ (1)
+, mode_requested_ (mode)
+, strict_ (strict)
 {
   if (device_id == "")
     device_ = RealSenseDeviceManager::getInstance ()->captureDevice ();

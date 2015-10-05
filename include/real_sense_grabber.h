@@ -129,9 +129,15 @@ namespace pcl
         * that match the supplied \a device_id.
         *
         * \param[in] device_id device identifier, which can be a serial number,
-        * an index (with '#' prefix), or an empty string (to select the first
-        * available device) */
-      RealSenseGrabber (const std::string& device_id = "");
+        * a zero-based index (with '#' prefix), or an empty string (to select
+        * the first available device)
+        * \param[in] mode desired framerate and stream resolution (see Mode).
+        * If the default is supplied, then the mode closest to VGA at 30 Hz
+        * will be chosen.
+        * \param[in] strict if set to \c true, an exception will be thrown if
+        * device does not support exactly the mode requsted. Otherwise the
+        * closest available mode is selected. */
+      RealSenseGrabber (const std::string& device_id = "", const Mode& mode = Mode (), bool strict = false);
 
       virtual
       ~RealSenseGrabber () throw ();
@@ -188,8 +194,16 @@ namespace pcl
 
       bool is_running_;
       unsigned int confidence_threshold_;
+
       TemporalFilteringType temporal_filtering_type_;
       size_t temporal_filtering_window_size_;
+
+      /// Capture mode requested by the user at construction time
+      Mode mode_requested_;
+
+      /// Whether or not selected capture mode should strictly match what the user
+      /// has requested
+      bool strict_;
 
       /// Indicates whether there are subscribers for PointXYZ signal, computed
       /// and stored on start()
