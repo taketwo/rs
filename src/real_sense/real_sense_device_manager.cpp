@@ -46,7 +46,6 @@ boost::mutex pcl::io::real_sense::RealSenseDeviceManager::mutex_;
 template <typename T> void
 releasePXCResource (T* resource)
 {
-  std::cout << "Releasing PXC resource " << typeid(T).name() << std::endl;
   if (resource)
   {
     resource->Release ();
