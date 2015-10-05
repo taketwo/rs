@@ -117,6 +117,7 @@ pcl::RealSenseGrabber::RealSenseGrabber (const std::string& device_id)
 , confidence_threshold_ (6)
 , temporal_filtering_type_ (RealSense_None)
 , depth_buffer_ (new pcl::io::SingleBuffer<unsigned short> (SIZE))
+, temporal_filtering_window_size_ (1)
 {
   if (device_id == "")
     device_ = RealSenseDeviceManager::getInstance ()->captureDevice ();
@@ -217,7 +218,7 @@ void
 pcl::RealSenseGrabber::enableTemporalFiltering (TemporalFilteringType type, size_t window_size)
 {
   if (temporal_filtering_type_ != type ||
-     (type != RealSense_None && depth_buffer_->size () != window_size))
+     (type != RealSense_None && temporal_filtering_window_size_ != window_size))
   {
     bool was_running = is_running_;
     if (was_running)
@@ -242,6 +243,7 @@ pcl::RealSenseGrabber::enableTemporalFiltering (TemporalFilteringType type, size
         }
     }
     temporal_filtering_type_ = type;
+    temporal_filtering_window_size_ = window_size;
     if (was_running)
       start ();
   }

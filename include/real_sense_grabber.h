@@ -189,6 +189,7 @@ namespace pcl
       bool is_running_;
       unsigned int confidence_threshold_;
       TemporalFilteringType temporal_filtering_type_;
+      size_t temporal_filtering_window_size_;
 
       /// Indicates whether there are subscribers for PointXYZ signal, computed
       /// and stored on start()
