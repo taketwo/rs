@@ -407,27 +407,29 @@ main (int argc, char** argv)
   try
   {
     pcl::RealSenseGrabber grabber (device_id);
-    if (mode_id > 0)
+    std::vector<pcl::RealSenseGrabber::Mode> xyz_modes = grabber.getAvailableModes (true);
+    std::vector<pcl::RealSenseGrabber::Mode> xyzrgba_modes = grabber.getAvailableModes (false);
+    if (mode_id == 0)
     {
-      std::vector<pcl::RealSenseGrabber::Mode> xyz_modes = grabber.getAvailableModes (true);
-      std::vector<pcl::RealSenseGrabber::Mode> xyzrgba_modes = grabber.getAvailableModes (false);
-      if (mode_id <= xyz_modes.size ())
-      {
-        grabber.setMode (xyz_modes[mode_id - 1], true);
-        RealSenseViewer<pcl::PointXYZ> viewer (grabber);
-        viewer.run ();
-      }
-      else if (mode_id <= xyz_modes.size () + xyzrgba_modes.size ())
-      {
-        grabber.setMode (xyzrgba_modes[mode_id - xyz_modes.size () - 1], true);
-        RealSenseViewer<pcl::PointXYZRGBA> viewer (grabber);
-        viewer.run ();
-      }
-      else
-      {
-        print_error ("Requested a mode (%i) that is not in the list of supported by this device\n", mode_id);
-        return (1);
-      }
+      RealSenseViewer<pcl::PointXYZRGBA> viewer (grabber);
+      viewer.run ();
+    }
+    else if (mode_id <= xyz_modes.size ())
+    {
+      grabber.setMode (xyz_modes[mode_id - 1], true);
+      RealSenseViewer<pcl::PointXYZ> viewer (grabber);
+      viewer.run ();
+    }
+    else if (mode_id <= xyz_modes.size () + xyzrgba_modes.size ())
+    {
+      grabber.setMode (xyzrgba_modes[mode_id - xyz_modes.size () - 1], true);
+      RealSenseViewer<pcl::PointXYZRGBA> viewer (grabber);
+      viewer.run ();
+    }
+    else
+    {
+      print_error ("Requested a mode (%i) that is not in the list of supported by this device\n", mode_id);
+      return (1);
     }
   }
   catch (pcl::io::IOException& e)
