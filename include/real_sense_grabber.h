@@ -184,7 +184,14 @@ namespace pcl
 
     private:
 
-      void run ();
+      void
+      run ();
+
+      void
+      createDepthBuffer ();
+
+      void
+      selectMode ();
 
       /** Compute a score which indicates how different is a given mode is from
         * the mode requested by the user.
@@ -213,6 +220,10 @@ namespace pcl
       /// has requested
       bool strict_;
 
+      /// Capture mode selected by grabber (among the modes supported by the
+      /// device), computed and stored on start()
+      Mode mode_selected_;
+
       /// Indicates whether there are subscribers for PointXYZ signal, computed
       /// and stored on start()
       bool need_xyz_;
@@ -225,14 +236,6 @@ namespace pcl
       mutable boost::mutex fps_mutex_;
 
       boost::thread thread_;
-
-      static const int FRAMERATE = 30;
-      static const int WIDTH = 640;
-      static const int HEIGHT = 480;
-      static const int SIZE = WIDTH * HEIGHT;
-      static const int COLOR_WIDTH = 640;
-      static const int COLOR_HEIGHT = 480;
-      static const int COLOR_SIZE = COLOR_WIDTH * COLOR_HEIGHT;
 
       /// Depth buffer to perform temporal filtering of the depth images
       boost::shared_ptr<pcl::io::Buffer<unsigned short> > depth_buffer_;
