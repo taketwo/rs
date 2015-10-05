@@ -71,7 +71,6 @@ printHelp (int, char **argv)
   std::cout << "     --help, -h  : Show this help"                                            << std::endl;
   std::cout << "     --list, -l  : List connected RealSense devices and supported modes"      << std::endl;
   std::cout << "     --mode <id> : Use capture mode <id> from the list of supported modes"    << std::endl;
-  std::cout << "     --xyz       : View XYZ-only clouds"                                      << std::endl;
   std::cout << std::endl;
   std::cout << "Keyboard commands:"                                                           << std::endl;
   std::cout << std::endl;
@@ -93,6 +92,11 @@ printHelp (int, char **argv)
   std::cout << "     * device index (e.g. #2 for the second connected device)"                << std::endl;
   std::cout << std::endl;
   std::cout << "   If device_id is not given, then the first available device will be used."  << std::endl;
+  std::cout << std::endl;
+  std::cout << "   If capture mode is not given, then the grabber will try to enable both"    << std::endl;
+  std::cout << "   depth and color streams at VGA resolution and 30 Hz framerate. If this"    << std::endl;
+  std::cout << "   particular mode is not available, the one that most closely matches this"  << std::endl;
+  std::cout << "   specification will be chosen."                                             << std::endl;
   std::cout << std::endl;
 }
 
@@ -126,7 +130,7 @@ printDeviceList ()
         for (size_t i = 0; i < xyzrgba_modes.size (); ++i)
         {
           const pcl::RealSenseGrabber::Mode& m = xyzrgba_modes[i];
-          std::cout << boost::str (fmt_dcm % (i + 1) % m.fps % m.depth_width % m.depth_height % m.color_width % m.color_height);
+          std::cout << boost::str (fmt_dcm % (i + xyz_modes.size () + 1) % m.fps % m.depth_width % m.depth_height % m.color_width % m.color_height);
         }
       else
         std::cout << " none";
@@ -366,7 +370,6 @@ class RealSenseViewer
 
 };
 
-
 int
 main (int argc, char** argv)
 {
@@ -391,10 +394,8 @@ main (int argc, char** argv)
 
   std::string device_id;
 
-  if (argc == 1               ||           // no arguments
-     (argc == 2 && xyz_only)  ||           // single argument, and it is --xyz
-     (argc == 3 && with_mode) ||           // single argument, and it is --mode <id>
-     (argc == 4 && xyz_only && with_mode)) // two arguments, and it is --xyz and --mode <id>
+  if (argc == 1 ||              // no arguments
+     (argc == 3 && with_mode))  // single argument, and it is --mode <id> 
   {
     device_id = "";
     print_info ("Creating a grabber for the first available device\n");
@@ -410,23 +411,25 @@ main (int argc, char** argv)
     pcl::RealSenseGrabber grabber (device_id);
     if (mode_id > 0)
     {
-      std::vector<pcl::RealSenseGrabber::Mode> modes = grabber.getAvailableModes (xyz_only);
-      if (mode_id > modes.size ())
+      std::vector<pcl::RealSenseGrabber::Mode> xyz_modes = grabber.getAvailableModes (true);
+      std::vector<pcl::RealSenseGrabber::Mode> xyzrgba_modes = grabber.getAvailableModes (false);
+      if (mode_id <= xyz_modes.size ())
+      {
+        grabber.setMode (xyz_modes[mode_id - 1], true);
+        RealSenseViewer<pcl::PointXYZ> viewer (grabber);
+        viewer.run ();
+      }
+      else if (mode_id <= xyz_modes.size () + xyzrgba_modes.size ())
+      {
+        grabber.setMode (xyzrgba_modes[mode_id - xyz_modes.size () - 1], true);
+        RealSenseViewer<pcl::PointXYZRGBA> viewer (grabber);
+        viewer.run ();
+      }
+      else
       {
         print_error ("Requested a mode (%i) that is not in the list of supported by this device\n", mode_id);
         return (1);
       }
-      grabber.setMode (modes[mode_id - 1], true);
-    }
-    if (xyz_only)
-    {
-      RealSenseViewer<pcl::PointXYZ> viewer (grabber);
-      viewer.run ();
-    }
-    else
-    {
-      RealSenseViewer<pcl::PointXYZRGBA> viewer (grabber);
-      viewer.run ();
     }
   }
   catch (pcl::io::IOException& e)
