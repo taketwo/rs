@@ -246,12 +246,12 @@ class RealSenseViewer
           switch (temporal_filtering_)
           {
             case pcl::RealSenseGrabber::RealSense_None:
-              //{
-                //temporal_filtering_ = pcl::RealSenseGrabber::RealSense_Median;
-                //pcl::console::print_value ("median\n");
-                //break;
-              //}
-            //case pcl::RealSenseGrabber::RealSense_Median:
+              {
+                temporal_filtering_ = pcl::RealSenseGrabber::RealSense_Median;
+                pcl::console::print_value ("median\n");
+                break;
+              }
+            case pcl::RealSenseGrabber::RealSense_Median:
               {
                 temporal_filtering_ = pcl::RealSenseGrabber::RealSense_Average;
                 pcl::console::print_value ("average\n");
@@ -305,7 +305,8 @@ class RealSenseViewer
       }
     }
 
-    void displaySettings ()
+    void
+    displaySettings ()
     {
       const int dx = 5;
       const int dy = 14;
@@ -401,7 +402,7 @@ main (int argc, char** argv)
   else
   {
     device_id = argv[argc - 1];
-    print_info ("Creating a grabber for device \"%s\"\n", device_id.c_str ());
+    print_info ("Creating a grabber for device "); print_value ("%s\n", device_id.c_str ());
   }
 
   try

@@ -470,7 +470,6 @@ pcl::RealSenseGrabber::createDepthBuffer ()
   }
   case RealSense_Median:
   {
-    // TODO: MedianFilter freezes on destructor, investigate
     depth_buffer_.reset (new pcl::io::MedianBuffer<unsigned short> (size, temporal_filtering_window_size_));
     break;
   }
