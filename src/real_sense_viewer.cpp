@@ -162,6 +162,7 @@ class RealSenseViewer
     , with_bilateral_ (false)
     {
       viewer_.registerKeyboardCallback (&RealSenseViewer::keyboardCallback, *this);
+      viewer_.registerPointPickingCallback (&RealSenseViewer::pointPickingCallback, *this);
       bilateral_.setSigmaS (5);
     }
 
@@ -306,6 +307,17 @@ class RealSenseViewer
         }
         displaySettings ();
       }
+    }
+
+    void
+    pointPickingCallback (const pcl::visualization::PointPickingEvent& event, void*)
+    {
+      float x, y, z;
+      event.getPoint (x, y, z);
+      pcl::console::print_info ("Picked point at ");
+      pcl::console::print_value ("%.3f", x); pcl::console::print_info (", ");
+      pcl::console::print_value ("%.3f", y); pcl::console::print_info (", ");
+      pcl::console::print_value ("%.3f\n", z);
     }
 
     void
