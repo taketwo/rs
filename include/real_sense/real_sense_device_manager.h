@@ -144,6 +144,15 @@ namespace pcl
           inline PXCCapture::Device&
           getPXCDevice () { return (*device_); }
 
+          /** Reset the state of given device by releasing and capturing again. */
+          static void
+          reset (RealSenseDevice::Ptr& device)
+          {
+            std::string id = device->getSerialNumber ();
+            device.reset ();
+            device = RealSenseDeviceManager::getInstance ()->captureDevice (id);
+          }
+
         private:
 
           friend class RealSenseDeviceManager;

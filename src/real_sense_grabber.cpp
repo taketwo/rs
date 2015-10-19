@@ -419,10 +419,7 @@ pcl::RealSenseGrabber::run ()
     sample.ReleaseImages ();
   }
   projection->Release ();
-  // TODO: replace with a custom "restart" function?
-  std::string id = device_->getSerialNumber ();
-  device_.reset ();
-  device_ = RealSenseDeviceManager::getInstance ()->captureDevice (id);
+  RealSenseDevice::reset (device_);
 }
 
 float
