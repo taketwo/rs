@@ -65,7 +65,7 @@ convertPoint (const PXCPoint3DF32& src, T& tgt)
   }
   else
   {
-    tgt.x = src.x / 1000.0;
+    tgt.x = -src.x / 1000.0;
     tgt.y = src.y / 1000.0;
     tgt.z = src.z / 1000.0;
   }
