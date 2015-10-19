@@ -161,6 +161,10 @@ class RealSenseViewer
     , temporal_filtering_ (pcl::RealSenseGrabber::RealSense_None)
     , with_bilateral_ (false)
     {
+      // TODO: the function below does not function in PCL 1.7.2, but is fixed in master; uncomment when merging.
+      // viewer_.setSize (grabber_.getMode ().depth_width, grabber_.getMode ().depth_height);
+      viewer_.setCameraFieldOfView (0.785398); // approximately 45 degrees
+      viewer_.setCameraPosition (0, 0, 0, 0, 0, 1, 0, -1, 0);
       viewer_.registerKeyboardCallback (&RealSenseViewer::keyboardCallback, *this);
       viewer_.registerPointPickingCallback (&RealSenseViewer::pointPickingCallback, *this);
       bilateral_.setSigmaS (5);
@@ -186,7 +190,7 @@ class RealSenseViewer
           if (!viewer_.updatePointCloud (new_cloud_, "cloud"))
           {
             viewer_.addPointCloud (new_cloud_, "cloud");
-            viewer_.resetCamera ();
+            viewer_.setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "cloud");
           }
           displaySettings ();
           last_cloud_ = new_cloud_;
