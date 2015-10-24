@@ -39,6 +39,8 @@
 
 #include "real_sense/real_sense_device_manager.h"
 
+using namespace pcl::io;
+
 boost::mutex pcl::io::real_sense::RealSenseDeviceManager::mutex_;
 
 /** Helper function to release a RealSense resource.

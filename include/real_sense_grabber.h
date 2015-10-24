@@ -83,7 +83,7 @@ namespace pcl
         * grabber (see getAvailableModes()). In the first case setting some
         * fields to zero means "don't care", i.e. the grabber is allowed to
         * decide itself which concrete values to use. */
-      struct Mode
+      struct PCL_EXPORTS Mode
       {
         unsigned int fps;
         unsigned int depth_width;

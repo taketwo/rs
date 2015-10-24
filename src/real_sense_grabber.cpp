@@ -50,6 +50,7 @@
 #include "buffers.h"
 #include "io_exception.h"
 
+using namespace pcl::io;
 using namespace pcl::io::real_sense;
 
 /* Helper function to convert a PXCPoint3DF32 point into a PCL point.
