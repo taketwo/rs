@@ -37,17 +37,17 @@
 
 #include <iostream>
 
-#include <boost/thread/mutex.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/format.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/thread/mutex.hpp>
 
+#include <pcl/io/pcd_io.h>
+#include <pcl/common/time.h>
 #include <pcl/console/print.h>
 #include <pcl/console/parse.h>
-#include <pcl/common/time.h>
-#include <pcl/visualization/pcl_visualizer.h>
-#include <pcl/filters/fast_bilateral.h>
 #include <pcl/io/io_exception.h>
-#include <pcl/io/pcd_io.h>
+#include <pcl/filters/fast_bilateral.h>
+#include <pcl/visualization/pcl_visualizer.h>
 
 #include "real_sense_grabber.h"
 
@@ -456,3 +456,4 @@ main (int argc, char** argv)
 
   return (0);
 }
+

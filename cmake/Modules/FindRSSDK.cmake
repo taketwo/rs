@@ -12,10 +12,10 @@
 
 find_path(RSSDK_DIR include/pxcversion.h
           PATHS "$ENV{RSSDK_DIR}"
-		        "$ENV{PROGRAMFILES}/Intel/RSSDK"
-				"$ENV{PROGRAMW6432}/Intel/RSSDK"
-				"C:/Program Files (x86)/Intel/RSSDK"
-				"C:/Program Files/Intel/RSSDK"
+                "$ENV{PROGRAMFILES}/Intel/RSSDK"
+                "$ENV{PROGRAMW6432}/Intel/RSSDK"
+                "C:/Program Files (x86)/Intel/RSSDK"
+                "C:/Program Files/Intel/RSSDK"
           DOC "RealSense SDK directory")
 
 if(RSSDK_DIR)
@@ -23,7 +23,7 @@ if(RSSDK_DIR)
   # Include directories
   set(RSSDK_INCLUDE_DIRS ${RSSDK_DIR}/include)
   mark_as_advanced(RSSDK_INCLUDE_DIRS)
-  
+
   # Libraries
   set(RSSDK_RELEASE_NAME libpxc.lib)
   set(RSSDK_DEBUG_NAME libpxc_d.lib)
@@ -52,7 +52,7 @@ if(RSSDK_DIR)
   endforeach()
   unset(_pxcversion_H_CONTENTS)
   set(RSSDK_VERSION "${RSSDK_VERSION_MAJOR}.${RSSDK_VERSION_MINOR}.${RSSDK_VERSION_BUILD}.${RSSDK_VERSION_REVISION}")
-	
+
 endif()
 
 include(FindPackageHandleStandardArgs)

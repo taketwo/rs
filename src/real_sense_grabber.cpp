@@ -39,8 +39,8 @@
 
 #include <pxcimage.h>
 #include <pxccapture.h>
-#include <pxcsensemanager.h>
 #include <pxcprojection.h>
+#include <pxcsensemanager.h>
 
 #include <pcl/common/io.h>
 #include <pcl/common/time.h>
@@ -313,7 +313,7 @@ pcl::RealSenseGrabber::run ()
       status = device_->getPXCDevice ().ReadStreams (PXCCapture::STREAM_TYPE_DEPTH, &sample);
 
     uint64_t timestamp = pcl::getTime () * 1.0e+6;
-    
+
     switch (status)
     {
     case PXC_STATUS_NO_ERROR:
@@ -323,7 +323,7 @@ pcl::RealSenseGrabber::run ()
       fps_mutex_.unlock ();
 
       /* We preform the following steps to convert received data into point clouds:
-       * 
+       *
        *   1. Push depth image to the depth buffer
        *   2. Pull filtered depth image from the depth buffer
        *   3. Project (filtered) depth image into 3D

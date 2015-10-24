@@ -189,7 +189,7 @@ namespace pcl
         * controlled by this grabber.
         *
         * \param[in] only_depth list depth-only modes
-        * 
+        *
         * \note: this list exclude modes where framerates of the depth and
         * color streams do not match. */
       std::vector<Mode>
@@ -203,7 +203,7 @@ namespace pcl
       setMode (const Mode& mode, bool strict = false);
 
       /** Get currently active capturing mode.
-        * 
+        *
         * \note: capturing mode is selected when start() is called; output of
         * this function before grabber was started is undefined. */
       const Mode&

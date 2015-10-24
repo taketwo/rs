@@ -38,11 +38,11 @@
 #ifndef PCL_IO_REAL_SENSE_DEVICE_MANAGER_H
 #define PCL_IO_REAL_SENSE_DEVICE_MANAGER_H
 
-#include <boost/utility.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
-#include <boost/thread/mutex.hpp>
 #include <boost/thread.hpp>
+#include <boost/utility.hpp>
+#include <boost/weak_ptr.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/thread/mutex.hpp>
 
 #include <pcl/pcl_exports.h>
 
@@ -128,7 +128,7 @@ namespace pcl
           std::vector<DeviceInfo> device_list_;
 
           static boost::mutex mutex_;
- 
+
       };
 
       class PCL_EXPORTS RealSenseDevice : boost::noncopyable

@@ -166,7 +166,7 @@ void
 pcl::io::real_sense::RealSenseDeviceManager::populateDeviceList ()
 {
   device_list_.clear ();
-  
+
   // Module description to match
   PXCSession::ImplDesc module_desc = {};
   module_desc.group = PXCSession::IMPL_GROUP_SENSOR;
