@@ -138,6 +138,8 @@ pcl::RealSenseGrabber::~RealSenseGrabber () throw ()
 
   disconnect_all_slots<sig_cb_real_sense_point_cloud> ();
   disconnect_all_slots<sig_cb_real_sense_point_cloud_rgba> ();
+  
+  RealSenseDeviceManager::getInstance().reset();
 }
 
 void
